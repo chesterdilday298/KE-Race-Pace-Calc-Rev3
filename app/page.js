@@ -218,8 +218,9 @@ export default function RacePacingCalculator() {
     return Math.max(0, speedMph); // Ensure non-negative
   };
 
-  const getRaceStrategy = (raceType) => {
+  const getRaceStrategy = (raceType, athleteLevel = 'Intermediate') => {
     const strategies = {
+      // Triathlon strategies (unchanged - not athlete-level specific yet)
       'Sprint Triathlon': {
         mistake: 'Racing like it\'s a 45-60 minute suffer-fest from the gun.',
         swim: 'Calm and controlled. You should exit slightly under redline, not gasping.',
@@ -255,38 +256,221 @@ export default function RacePacingCalculator() {
         run: 'Ease into your pace. Let your heart rate guide your effort level.',
         mindset: 'Execute your custom race with the same discipline as any standard distance.'
       },
+      
+      // Running strategies (athlete-level specific)
       '5K Run': {
-        mistake: 'Starting faster than goal pace because it feels "easy."',
-        strategy: 'Start at goal pace. Hold miles 1-2. Push the final mile.',
-        mindset: 'You don\'t race the first mile — you survive it well enough to race the last.'
+        'Recreational': {
+          mistake: 'Early overexertion',
+          strategy: 'Start 10–20 sec/mi conservative, build late',
+          mindset: 'Finish strong, not shocked',
+          nutrition_before: 'Normal meal 2–3 hr pre',
+          nutrition_during: 'None',
+          nutrition_after: 'Protein + carbs'
+        },
+        'Intermediate': {
+          mistake: 'Adrenaline pacing',
+          strategy: 'Slight restraint mile 1, goal pace mid',
+          mindset: 'Spend fitness late',
+          nutrition_before: 'Light carbs pre',
+          nutrition_during: 'Optional rinse',
+          nutrition_after: 'Recovery snack'
+        },
+        'Competitive': {
+          mistake: 'Impatience',
+          strategy: 'Goal pace early, squeeze last mile',
+          mindset: 'Controlled pain',
+          nutrition_before: 'Carb snack',
+          nutrition_during: 'None',
+          nutrition_after: 'Immediate carbs'
+        },
+        'Elite': {
+          mistake: 'Marginal errors',
+          strategy: 'Precision start, tactical finish',
+          mindset: 'Precision first',
+          nutrition_before: 'Carb priming',
+          nutrition_during: 'None',
+          nutrition_after: 'Rapid refuel'
+        }
       },
       '10K Run': {
-        mistake: 'Overreaching at mile 2-3 and paying for it late.',
-        strategy: 'Controlled start. Hold steady through miles 3-5. Push the final mile.',
-        mindset: 'The 10K rewards patience and punishes impatience quietly.'
+        'Recreational': {
+          mistake: 'Fatigue creep',
+          strategy: 'Conservative first 2 mi, steady effort',
+          mindset: 'Hold effort',
+          nutrition_before: 'Carb-focused meal',
+          nutrition_during: 'Water only',
+          nutrition_after: 'Protein + carbs'
+        },
+        'Intermediate': {
+          mistake: 'Middle-mile fade',
+          strategy: 'Even pacing, press last 3K',
+          mindset: 'Calm early',
+          nutrition_before: 'Carb snack',
+          nutrition_during: 'Optional gel',
+          nutrition_after: 'Recovery meal'
+        },
+        'Competitive': {
+          mistake: 'Over-response',
+          strategy: 'Even effort, negative split',
+          mindset: 'Race the last 3K',
+          nutrition_before: 'Carb load',
+          nutrition_during: 'Gel optional',
+          nutrition_after: 'Immediate carbs'
+        },
+        'Elite': {
+          mistake: 'Tactical surges',
+          strategy: 'Effort-based, surge late',
+          mindset: 'Efficiency wins',
+          nutrition_before: 'Carb optimized',
+          nutrition_during: 'Minimal',
+          nutrition_after: 'Rapid refuel'
+        }
       },
       'Half Marathon': {
-        mistake: 'Banking time early.',
-        strategy: 'Conservative first 3 miles. Lock into rhythm mid-race. Negative split miles 10-13.',
-        mindset: 'The best half marathons feel boring early and powerful late.'
+        'Recreational': {
+          mistake: 'Limited durability',
+          strategy: 'Start conservative, protect last 5K',
+          mindset: 'Finish strong',
+          nutrition_before: 'Carb-focused meal',
+          nutrition_during: 'Optional gel 45–60 min',
+          nutrition_after: 'Protein + carbs'
+        },
+        'Intermediate': {
+          mistake: 'Early enthusiasm',
+          strategy: 'Even first half, press late',
+          mindset: 'Patience buys speed',
+          nutrition_before: 'Carb dinner + light breakfast',
+          nutrition_during: '1 gel every 40–45 min',
+          nutrition_after: '3:1 carbs:protein'
+        },
+        'Competitive': {
+          mistake: 'Middle-mile fade',
+          strategy: 'Even effort, slight negative split',
+          mindset: 'Even is fast',
+          nutrition_before: 'Full carb prep',
+          nutrition_during: '60–75 g/hr',
+          nutrition_after: 'Recovery meal'
+        },
+        'Elite': {
+          mistake: 'Tactical vs physiological',
+          strategy: 'Pace by effort, surge late',
+          mindset: 'Earn the last 10K',
+          nutrition_before: 'Optimized carb load',
+          nutrition_during: '75–90 g/hr',
+          nutrition_after: 'Rapid refuel'
+        }
       },
       'Full Marathon': {
-        mistake: 'Letting excitement dictate the first 10 miles.',
-        strategy: 'Very conservative first 10 miles. Manage miles 10-20. Grit miles 20-26 only if earned.',
-        mindset: 'Marathons aren\'t finished with courage — they\'re managed with discipline.'
+        'Recreational': {
+          mistake: 'Glycogen depletion',
+          strategy: 'Very conservative first half',
+          mindset: 'Fuel early, finish upright',
+          nutrition_before: '48-hr carb focus',
+          nutrition_during: '40–60 g/hr',
+          nutrition_after: 'Aggressive refeed'
+        },
+        'Intermediate': {
+          mistake: 'Late-race fade',
+          strategy: 'Nothing heroic before mile 20',
+          mindset: 'Protect the last 10K',
+          nutrition_before: 'Carb load + sodium',
+          nutrition_during: '60–70 g/hr',
+          nutrition_after: 'Protein + sodium'
+        },
+        'Competitive': {
+          mistake: 'Overconfidence',
+          strategy: 'Even effort, protect final 10K',
+          mindset: 'Discipline wins',
+          nutrition_before: 'Full carb protocol',
+          nutrition_during: '70–90 g/hr',
+          nutrition_after: 'Immediate carbs'
+        },
+        'Elite': {
+          mistake: 'Marginal errors compound',
+          strategy: 'Effort-based pacing',
+          mindset: 'Efficiency wins',
+          nutrition_before: 'Optimized carb load',
+          nutrition_during: '90+ g/hr',
+          nutrition_after: 'Rapid glycogen reload'
+        }
       },
       '50 Mile Ultra': {
-        mistake: 'Going out too hard in the first 20 miles.',
-        strategy: 'Ultra-conservative start. Walk the uphills early. Save energy for hours 6-10.',
-        mindset: 'Ultras are about sustainable effort over time, not pace.'
+        'Recreational': {
+          mistake: 'GI tolerance',
+          strategy: 'Walk early, jog steady',
+          mindset: 'Eat before hungry',
+          nutrition_before: 'High-carb, low fiber',
+          nutrition_during: '200–250 cal/hr',
+          nutrition_after: 'Small frequent meals'
+        },
+        'Intermediate': {
+          mistake: 'Pacing discipline',
+          strategy: 'Conservative first half',
+          mindset: 'Smooth beats strong',
+          nutrition_before: 'Carb + sodium',
+          nutrition_during: '250–300 cal/hr',
+          nutrition_after: 'Rehydrate aggressively'
+        },
+        'Competitive': {
+          mistake: 'Heat and fueling',
+          strategy: 'Even output, adapt terrain',
+          mindset: 'Relentless motion',
+          nutrition_before: 'Carb optimized',
+          nutrition_during: '300+ cal/hr',
+          nutrition_after: 'Full recovery'
+        },
+        'Elite': {
+          mistake: 'Sleep and efficiency',
+          strategy: 'Precision pacing',
+          mindset: 'Calories equal speed',
+          nutrition_before: 'Scientific carb load',
+          nutrition_during: '300–350 cal/hr',
+          nutrition_after: 'Structured rebuild'
+        }
       },
       '100 Mile Ultra': {
-        mistake: 'Not treating the first 50 miles as a warm-up.',
-        strategy: 'Extreme patience first 50 miles. Manage nutrition and sleep. Run when you can past mile 60.',
-        mindset: 'A 100-miler is mental warfare disguised as a footrace. Win the mind game first.'
+        'Recreational': {
+          mistake: 'Completion',
+          strategy: 'Walk early, protect feet',
+          mindset: 'Forward is success',
+          nutrition_before: 'Carb dominant',
+          nutrition_during: '200–250 cal/hr',
+          nutrition_after: 'Days-long recovery'
+        },
+        'Intermediate': {
+          mistake: 'Sleep deprivation',
+          strategy: 'Run/walk cycles',
+          mindset: 'Solve problems early',
+          nutrition_before: 'Carb + electrolytes',
+          nutrition_during: '250–300 cal/hr',
+          nutrition_after: 'Multi-day rebuild'
+        },
+        'Competitive': {
+          mistake: 'Mental fatigue',
+          strategy: 'Efficient aid stations',
+          mindset: 'Nothing wasted',
+          nutrition_before: 'Carb optimized',
+          nutrition_during: '300–350 cal/hr',
+          nutrition_after: 'Aggressive refeed'
+        },
+        'Elite': {
+          mistake: 'Entropy management',
+          strategy: 'Precision execution',
+          mindset: 'Manage entropy',
+          nutrition_before: 'Scientific protocol',
+          nutrition_during: '350+ cal/hr',
+          nutrition_after: 'Structured rebuild'
+        }
       }
     };
-    return strategies[raceType];
+    
+    // For running races, return athlete-level-specific strategy
+    if (strategies[raceType] && typeof strategies[raceType] === 'object' && strategies[raceType][athleteLevel]) {
+      return strategies[raceType][athleteLevel];
+    }
+    
+    // For triathlons or if athlete level not found, return the general strategy
+    return strategies[raceType] || strategies['Olympic Triathlon'];
   };
 
   const getPacingZones = (raceType) => {const zones = {
@@ -353,7 +537,7 @@ export default function RacePacingCalculator() {
       throw new Error('No zones found for: ' + formData.raceType);
     }
     
-    const strategy = getRaceStrategy(formData.raceType);if (!strategy) {
+    const strategy = getRaceStrategy(formData.raceType, formData.athleteLevel);if (!strategy) {
       alert('ERROR: No strategy found for race type: ' + formData.raceType);
       throw new Error('No strategy found for: ' + formData.raceType);
     }
@@ -889,7 +1073,26 @@ ${results.strategy.mistake}
 KEY MINDSET
 ${'-'.repeat(60)}
 ${results.strategy.mindset}
+`;
 
+    // Add nutrition guidance for running races with athlete-level strategies
+    if (results.strategy.nutrition_before) {
+      content += `
+NUTRITION STRATEGY
+${'-'.repeat(60)}
+
+Before the Race:
+${results.strategy.nutrition_before}
+
+During the Race:
+${results.strategy.nutrition_during}
+
+After the Race:
+${results.strategy.nutrition_after}
+`;
+    }
+
+    content += `
 THE KEYSTONE RULE
 ${'-'.repeat(60)}
 Restraint early. Discipline in the middle. Execution late.
@@ -2751,6 +2954,39 @@ ${'='.repeat(60)}
                   {results.strategy.mindset}
                 </p>
               </div>
+
+              {/* NUTRITION GUIDANCE (for running races with athlete-level strategies) */}
+              {results.strategy.nutrition_before && (
+                <div style={{ marginBottom: '30px', padding: '20px', background: '#e8f5e9', borderRadius: '12px', border: '2px solid #66bb6a' }}>
+                  <h3 style={{ fontSize: '18px', color: colors.charcoal, marginBottom: '15px', fontWeight: '700' }}>
+                    NUTRITION STRATEGY
+                  </h3>
+                  <div style={{ marginBottom: '12px' }}>
+                    <h4 style={{ fontSize: '15px', color: colors.charcoal, marginBottom: '6px', fontWeight: '600' }}>
+                      Before the Race:
+                    </h4>
+                    <p style={{ fontSize: '14px', lineHeight: '1.6', color: colors.charcoal }}>
+                      {results.strategy.nutrition_before}
+                    </p>
+                  </div>
+                  <div style={{ marginBottom: '12px' }}>
+                    <h4 style={{ fontSize: '15px', color: colors.charcoal, marginBottom: '6px', fontWeight: '600' }}>
+                      During the Race:
+                    </h4>
+                    <p style={{ fontSize: '14px', lineHeight: '1.6', color: colors.charcoal }}>
+                      {results.strategy.nutrition_during}
+                    </p>
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '15px', color: colors.charcoal, marginBottom: '6px', fontWeight: '600' }}>
+                      After the Race:
+                    </h4>
+                    <p style={{ fontSize: '14px', lineHeight: '1.6', color: colors.charcoal }}>
+                      {results.strategy.nutrition_after}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* THE KEYSTONE RULE */}
               <div style={{ marginBottom: '30px', padding: '25px 20px', background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.maroon} 100%)`, borderRadius: '12px', textAlign: 'center', color: 'white' }}>
