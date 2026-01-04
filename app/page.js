@@ -1632,7 +1632,7 @@ Estimated Time: ${results.swim.estimatedTime}
 Effort Level: ${results.swim.effort}
 CSS (Critical Swim Speed): ${results.css}
 
-Strategy: ${results.strategy.swim}
+Strategy: ${results.strategy.swim ? results.strategy.swim.strategy : 'Focus on efficient technique'}
 `;
       } else {
         content += `
@@ -1674,7 +1674,7 @@ Estimated Time: ${results.bike.estimatedTime}
 Effort Level: ${results.bike.effort}
 FTP (Functional Threshold Power): ${results.ftp}W
 
-Strategy: ${results.strategy.bike}
+Strategy: ${results.strategy.bike ? results.strategy.bike.strategy : 'Maintain steady power output'}
 `;
       } else {
         content += `
@@ -1714,7 +1714,7 @@ Estimated Time: ${results.run.estimatedTime}
 Effort Level: ${results.run.effort}
 Threshold Pace: ${results.runThresholdPace}
 
-Strategy: ${results.strategy.run}
+Strategy: ${results.strategy.run ? results.strategy.run.strategy : 'Pace by effort and heart rate'}
 `;
       } else {
         content += `
@@ -3067,7 +3067,7 @@ ${'='.repeat(60)}
                     </div>
                     {results.approach === 'fitness' && (
                       <div style={{ background: 'white', padding: '15px', borderRadius: '8px', lineHeight: '1.6', fontSize: '14px', color: colors.charcoal }}>
-                        <strong>Strategy:</strong> {results.strategy.swim}
+                        <strong>Strategy:</strong> {results.strategy.swim ? results.strategy.swim.strategy : 'Focus on efficient technique'}
                       </div>
                     )}
                   </div>
@@ -3138,7 +3138,7 @@ ${'='.repeat(60)}
                     </div>
                     {results.approach === 'fitness' && (
                       <div style={{ background: 'white', padding: '15px', borderRadius: '8px', lineHeight: '1.6', fontSize: '14px', color: colors.charcoal }}>
-                        <strong>Strategy:</strong> {results.strategy.bike}
+                        <strong>Strategy:</strong> {results.strategy.bike ? results.strategy.bike.strategy : 'Maintain steady power output'}
                       </div>
                     )}
                   </div>
@@ -3211,7 +3211,7 @@ ${'='.repeat(60)}
                     </div>
                     {results.approach === 'fitness' && (
                       <div style={{ background: 'white', padding: '15px', borderRadius: '8px', lineHeight: '1.6', fontSize: '14px', color: colors.charcoal }}>
-                        <strong>Strategy:</strong> {results.strategy.run}
+                        <strong>Strategy:</strong> {results.strategy.run ? results.strategy.run.strategy : 'Pace by effort and heart rate'}
                       </div>
                     )}
                   </div>
