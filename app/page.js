@@ -1049,10 +1049,6 @@ Estimated Finish Time: ${results.run.estimatedTime}
 Effort Level: ${results.run.effort}
 RPE: ${results.zones.rpe}
 Threshold Pace: ${results.runThresholdPace}
-
-RACE STRATEGY
-${'-'.repeat(60)}
-${results.strategy.strategy}
 `;
       } else {
         content += `
@@ -1065,7 +1061,18 @@ Required Pace: ${results.run.requiredPace}/mi
     content += `
 RACE EXECUTION GUIDANCE
 ${'='.repeat(60)}
+`;
 
+    // Add race execution strategy if available
+    if (results.strategy.strategy) {
+      content += `
+RACE EXECUTION STRATEGY
+${'-'.repeat(60)}
+${results.strategy.strategy}
+`;
+    }
+
+    content += `
 PRIMARY MISTAKE TO AVOID
 ${'-'.repeat(60)}
 ${results.strategy.mistake}
@@ -2882,11 +2889,18 @@ ${'='.repeat(60)}
                       <div style={{ fontSize: '32px', fontWeight: '800' }}>{results.run.estimatedTime}</div>
                     </div>
                   )}
-                  {results.approach === 'fitness' && (
-                    <div style={{ background: 'white', padding: '15px', borderRadius: '8px', lineHeight: '1.6', fontSize: '14px', color: colors.charcoal }}>
-                      <strong>Strategy:</strong> {results.strategy.strategy}
-                    </div>
-                  )}
+                </div>
+              )}
+
+              {/* RACE EXECUTION STRATEGY - Blue Box */}
+              {results.strategy.strategy && (
+                <div style={{ marginBottom: '30px', padding: '20px', background: '#e3f2fd', borderRadius: '12px', border: '2px solid #2196f3' }}>
+                  <h3 style={{ fontSize: '18px', color: colors.charcoal, marginBottom: '12px', fontWeight: '700' }}>
+                    RACE EXECUTION STRATEGY
+                  </h3>
+                  <p style={{ fontSize: '14px', lineHeight: '1.6', color: colors.charcoal }}>
+                    {results.strategy.strategy}
+                  </p>
                 </div>
               )}
 
