@@ -1615,14 +1615,14 @@ ${'='.repeat(60)}
                 </div>
               </div>
               
-              {/* Athlete Level Selection - Only for Current Fitness */}
-              {formData.pacingApproach === 'fitness' && (
+              {/* Athlete Level Selection - For BOTH approaches */}
+              {formData.pacingApproach && (
                 <div style={{ marginTop: '25px', padding: '20px', background: `${colors.primary}08`, borderRadius: '12px', border: `2px solid ${colors.primary}30` }}>
                   <h3 style={{ fontSize: '18px', marginBottom: '15px', color: colors.charcoal, fontWeight: '700' }}>
                     YOUR ATHLETE LEVEL
                   </h3>
                   <div style={{ fontSize: '14px', color: '#666', marginBottom: '15px', lineHeight: '1.6' }}>
-                    This helps us adjust your threshold calculations to match your training experience
+                    This helps us tailor your pacing strategy to your experience and training volume
                   </div>
                   <div style={{ display: 'grid', gap: '12px' }}>
                     {[
@@ -1664,9 +1664,11 @@ ${'='.repeat(60)}
                           <div style={{ fontWeight: '700', fontSize: '16px', color: colors.charcoal }}>
                             {level}
                           </div>
-                          <div style={{ fontSize: '13px', fontWeight: '600', color: colors.primary, background: `${colors.primary}15`, padding: '3px 8px', borderRadius: '4px' }}>
-                            {pct} threshold
-                          </div>
+                          {formData.pacingApproach === 'fitness' && (
+                            <div style={{ fontSize: '13px', fontWeight: '600', color: colors.primary, background: `${colors.primary}15`, padding: '3px 8px', borderRadius: '4px' }}>
+                              {pct} threshold
+                            </div>
+                          )}
                         </div>
                         <div style={{ fontSize: '13px', color: '#666', lineHeight: '1.5' }}>
                           {desc}
@@ -1697,18 +1699,18 @@ ${'='.repeat(60)}
                 </button>
                 <button
                   onClick={nextStep}
-                  disabled={!formData.pacingApproach || (formData.pacingApproach === 'fitness' && !formData.athleteLevel)}
+                  disabled={!formData.pacingApproach || !formData.athleteLevel}
                   style={{
                     flex: 2,
                     padding: '16px',
                     fontSize: '18px',
                     fontWeight: 'bold',
-                    background: (formData.pacingApproach && (formData.pacingApproach === 'target' || formData.athleteLevel)) ? colors.primary : '#cccccc',
+                    background: (formData.pacingApproach && formData.athleteLevel) ? colors.primary : '#cccccc',
                     color: 'white',
                     border: 'none',
                     borderRadius: '12px',
-                    cursor: (formData.pacingApproach && (formData.pacingApproach === 'target' || formData.athleteLevel)) ? 'pointer' : 'not-allowed',
-                    boxShadow: (formData.pacingApproach && (formData.pacingApproach === 'target' || formData.athleteLevel)) ? `0 6px 20px ${colors.primary}60` : 'none',
+                    cursor: (formData.pacingApproach && formData.athleteLevel) ? 'pointer' : 'not-allowed',
+                    boxShadow: (formData.pacingApproach && formData.athleteLevel) ? `0 6px 20px ${colors.primary}60` : 'none',
                     letterSpacing: '0.5px'
                   }}
                 >
@@ -1837,57 +1839,6 @@ ${'='.repeat(60)}
               <h2 style={{ fontSize: '24px', marginBottom: '25px', color: colors.charcoal, fontWeight: '700', textAlign: 'center' }}>
                 STEP 5: YOUR GOAL TIME
               </h2>
-              
-              {/* Athlete Level Selection */}
-              <div style={{ marginBottom: '30px' }}>
-                <div style={{ fontWeight: '700', fontSize: '17px', color: colors.charcoal, marginBottom: '8px' }}>
-                  Your Athlete Level
-                </div>
-                <div style={{ fontSize: '13px', color: '#666', marginBottom: '15px' }}>
-                  This helps us tailor your pacing strategy to your experience and training volume
-                </div>
-                <div style={{ display: 'grid', gap: '12px' }}>
-                  {[
-                    { 
-                      level: 'Recreational',
-                      desc: 'Training 3-6 hours/week, racing for fun and fitness'
-                    },
-                    { 
-                      level: 'Intermediate',
-                      desc: 'Training 6-10 hours/week, focused on improvement'
-                    },
-                    { 
-                      level: 'Competitive',
-                      desc: 'Training 10-15 hours/week, age group podium contender'
-                    },
-                    { 
-                      level: 'Elite',
-                      desc: 'Training 15+ hours/week, pro or top age grouper'
-                    }
-                  ].map(({level, desc}) => (
-                    <div
-                      key={level}
-                      onClick={() => updateFormData('athleteLevel', level)}
-                      style={{
-                        padding: '15px',
-                        border: `2px solid ${formData.athleteLevel === level ? colors.primary : '#ddd'}`,
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        background: formData.athleteLevel === level ? 'white' : '#f9f9f9',
-                        boxShadow: formData.athleteLevel === level ? `0 2px 8px ${colors.primary}40` : 'none'
-                      }}
-                    >
-                      <div style={{ fontWeight: '700', fontSize: '16px', color: colors.charcoal, marginBottom: '5px' }}>
-                        {level}
-                      </div>
-                      <div style={{ fontSize: '13px', color: '#666', lineHeight: '1.5' }}>
-                        {desc}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
               
               <div style={{ marginBottom: '25px' }}>
                 <label style={{ display: 'block', fontSize: '16px', fontWeight: '600', color: colors.charcoal, marginBottom: '12px', textAlign: 'center' }}>
@@ -2035,8 +1986,8 @@ ${'='.repeat(60)}
                   </button>
                   <button
                     type="submit"
-                    disabled={!formData.targetTime || !formData.athleteLevel}
-                    style={{ flex: 2, padding: '16px', fontSize: '18px', fontWeight: 'bold', background: (formData.targetTime && formData.athleteLevel) ? colors.primary : '#cccccc', color: 'white', border: 'none', borderRadius: '12px', cursor: (formData.targetTime && formData.athleteLevel) ? 'pointer' : 'not-allowed', boxShadow: (formData.targetTime && formData.athleteLevel) ? `0 6px 20px ${colors.primary}60` : 'none', letterSpacing: '0.5px' }}
+                    disabled={!formData.targetTime}
+                    style={{ flex: 2, padding: '16px', fontSize: '18px', fontWeight: 'bold', background: formData.targetTime ? colors.primary : '#cccccc', color: 'white', border: 'none', borderRadius: '12px', cursor: formData.targetTime ? 'pointer' : 'not-allowed', boxShadow: formData.targetTime ? `0 6px 20px ${colors.primary}60` : 'none', letterSpacing: '0.5px' }}
                   >
                     GET MY STRATEGY →
                   </button>
